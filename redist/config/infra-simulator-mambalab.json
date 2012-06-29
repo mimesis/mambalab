@@ -1,0 +1,9 @@
+{
+ "infra" : "simulator",
+
+ "feed" : 
+ {
+ 	"type":"simulator",
+	"param" : "rules/simulator_mambalab.csv"
+ }
+}

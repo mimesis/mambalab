@@ -1,0 +1,29 @@
+{
+  "infra": "groupm",
+
+  "wserver" : 
+  {
+  		"host" : "wserver-a-groupm.bmnation.net",
+		"port" : 3060
+  	},
+  "thrift" : 
+  {
+  	"host" :  "ltt-server-a-groupm.bmnation.net",
+  	"port" : 3040
+  	},
+  "amqp" : 
+  {
+  	"host" : "mq-a-groupm.bmnation.net", 
+  	"user": "guest",
+  	"password" : "guest",
+  	"virtualHost" : "/",
+  	"port" : 5672,
+  	"exchangeName" : "brm-a",
+  	"queueName" : "reactor.brm-a-reporting"
+  },
+  "feed" : 
+  {
+  	"type":"amqp"
+
+  }
+}

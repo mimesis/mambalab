@@ -1,0 +1,15 @@
+{
+ "server": "calcul",
+
+ "databases" : 
+  [
+ {
+  	"name" : "esper",
+  	"host":  "reporting-calcul.cnlwoxlgrqmp.eu-west-1.rds.amazonaws.com",
+  	"dbprefix" : "cep",
+  	"user" : "mimesis",
+  	"password" : "m1m36"
+	
+  	}
+  ]
+}

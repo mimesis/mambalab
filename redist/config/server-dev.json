@@ -1,0 +1,15 @@
+{
+
+ "server" : "dev",
+
+ "databases" : 
+  [
+{
+  	"name" : "esper",
+  	"host":  "localhost",
+  	"dbprefix" : "esper",	
+  	"user" : "root",
+  	"password" : ""
+  	}
+  ]
+}

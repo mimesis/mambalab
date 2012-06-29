@@ -1,0 +1,14 @@
+{
+ "server": "groupm",
+
+ "databases" : 
+  [
+ {
+  	"name" : "esper",
+  	"host":  "groupm.caqjxg9bpn6g.eu-west-1.rds.amazonaws.com",
+  	"dbprefix" : "esper",
+  	"user" : "root",
+  	"password" : "m1m36m1m36"
+  	}
+  ]
+}

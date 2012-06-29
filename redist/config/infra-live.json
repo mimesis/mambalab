@@ -1,0 +1,29 @@
+{
+  "infra" : "live",
+
+  "wserver" : 
+  {
+  	"host" : "service.mambanation.com",
+"port" : 80
+  	},
+  "thrift" : 
+  {
+  	"host" :  "ltt-server-a-newlive.mambanation.net",
+  	"port" : 3040
+  	},
+  "amqp" : 
+  {
+  	"host" : "mq-a-newlive.mambanation.net", 
+  	"user": "guest",
+  	"password" : "guest",
+  	"virtualHost" : "/",
+  	"port" : 5672,
+  	"exchangeName" : "brm-a",
+  	"queueName" : "reactor.brm-a-reporting"
+  },
+  "feed" : 
+  {
+  	"type":"amqp"
+
+  }
+}

@@ -1,0 +1,1 @@
+java -jar cep.jar -port 80 -server 46.51.130.32 config/infra-qaz.json config/server-groupm.json config/rules-default.json

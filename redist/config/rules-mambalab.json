@@ -1,0 +1,20 @@
+{
+  "rules" :
+  {
+  	"path" : "rules",
+  	"startup" : [
+  		{ 
+  			"name": "admin",
+  			"roomIds" : [ ],
+  			"roomClasses" : [ ],
+  			"userIds" : [ ]
+  			},
+				{ 
+		  			"name": "mambalab",
+		  			"roomIds" : [ ],
+		  			"roomClasses" : [ ],
+		  			"userIds" : [ ]
+		  			}
+  			] 
+  	}
+}

@@ -1,0 +1,1 @@
+sudo java -jar cep.jar config/infra-qaz.json config/server-calcul.json config/rules-default.json

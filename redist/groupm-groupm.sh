@@ -1,0 +1,1 @@
+sudo java -jar cep.jar -port 80 -server http://46.51.130.32 config/infra-groupm.json config/server-groupm.json config/rules-mambalab.json > log.txt

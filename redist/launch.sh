@@ -1,0 +1,1 @@
+java -jar cep.jar etc/simulator-dev.json

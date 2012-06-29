@@ -1,0 +1,1 @@
+java -jar cep.jar config/infra-simulator-mambalab.json config/server-calcul.json config/rules-default.json

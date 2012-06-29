@@ -1,0 +1,30 @@
+{
+  
+ "infra" : "experience",
+
+  "wserver" : 
+  {
+  		"host" : "wserver-a-experience.bmnation.net",
+		"port" : 3060
+  	},
+  "thrift" : 
+  {
+  	"host" :  "ltt-server-a-experience.bmnation.net",
+  	"port" : 3040
+  	},
+  "amqp" : 
+  {
+  	"host" : "mq-a-experience.bmnation.net", 
+  	"user": "guest",
+  	"password" : "guest",
+  	"virtualHost" : "/",
+  	"port" : 5672,
+  	"exchangeName" : "brm-a",
+  	"queueName" : "reactor.brm-a-reporting"
+  },
+  "feed" : 
+  {
+  	"type":"amqp"
+
+  }
+}

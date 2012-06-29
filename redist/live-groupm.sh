@@ -1,0 +1,1 @@
+sudo java -jar cep.jar -port 80 -server 46.51.130.32 config/infra-live.json config/server-groupm.json config/rules-default.json

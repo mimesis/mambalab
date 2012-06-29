@@ -1,0 +1,1 @@
+sudo java -jar cep.jar config/infra-live.json config/server-calcul.json config/rules-default.json
