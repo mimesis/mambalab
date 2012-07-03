@@ -2,7 +2,7 @@ delay;user_id;room_id;event_name;event_param;event_param2
 
 1000;0;0;SAY;!!!start mambalab
 
-1000;;;TEST;displayquestion
+1000;;;TEST;displaymessage
 0;;;TEST;firstquestion
 1000;100;TEST_ROOM;SAY;/restart
 ;;;VALIDATE;
