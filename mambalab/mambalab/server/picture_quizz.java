@@ -23,8 +23,10 @@ public class picture_quizz
     {
     }
 
-    public static void handle(Rules cep, String quizzId, String questionId, String panelId, HttpServletResponse response)
+    public static void handle(String quizzId, String questionId, String panelId, HttpServletResponse response)
     {
+	Rules cep = MambaLab.cep;
+	
         DB db = (DB)cep.dbs.get("esper");
         String sql = (new StringBuilder("select panneau")).append(panelId).append(" from quizz where quizz_id='").append(quizzId).append("' and question_id='").append(questionId).append("'").toString();
         String text = "[MB]";

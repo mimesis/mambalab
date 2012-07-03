@@ -26,8 +26,10 @@ public class page_window
     {
     }
 
-    public static void display(Rules cep, HttpServletResponse response, boolean isWindow)
+    public static void display(Rules cep,HttpServletResponse response, boolean isWindow)
     {
+
+	
         try
         {
             for(Iterator safeIter = cep.rules.iterator(); safeIter.hasNext();)
@@ -63,8 +65,10 @@ public class page_window
         }
     }
 
-    public static void handle(Rules cep, HttpServletResponse response)
+    public static void handle( HttpServletResponse response)
     {
+	Rules cep = MambaLab.cep;
+	
         try
         {
             response.getWriter().println("<h2>Windows</h2>");

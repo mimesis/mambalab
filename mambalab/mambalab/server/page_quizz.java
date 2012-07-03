@@ -27,8 +27,10 @@ public class page_quizz
     {
     }
 
-    public static void handle(Rules cep, HttpServletResponse response, String quizzId)
+    public static void handle(HttpServletResponse response, String quizzId)
     {
+	
+	Rules cep = MambaLab.cep;
         try
         {
             StringBuilder strq = new StringBuilder();

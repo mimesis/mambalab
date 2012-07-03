@@ -48,7 +48,7 @@ public class MambaLab extends AbstractHandler
         if(target.startsWith("/pq"))
         {
             String params[] = target.split("/");
-            picture_quizz.handle(cep, params[2], params[3], params[4], response);
+            picture_quizz.handle( params[2], params[3], params[4], response);
             return;
         }
         response.setContentType("text/html;charset=utf-8");
@@ -61,25 +61,63 @@ public class MambaLab extends AbstractHandler
         response.getWriter().println("<a href=\"/clearcache\">Clear Cache</a> ");
         String userId = baseRequest.getParameter("userId");
         String quizzId = baseRequest.getParameter("quizzId");
+        String mode= baseRequest.getParameter("mode");
+        
+        if (mode !=null)
+        {
+        if (MambaLab.cep != null &&  mode.equals("stop"))
+	    {
+		MambalabManager.terminate(MambaLab.cep);
+		MambaLab.cep = null;
+		response.getWriter().println("server stopped...");		        		
+	    }
+        
+        if (MambaLab.cep == null && mode.equals("start"))
+    	{
+    	    
+    	    response.getWriter().println("server restarted...");
+       	    MambaLab.cep = MambalabManager.launch(MambaLab.cep_args);
+    	}
+        }
+        
+    	
+        
+     if (MambaLab.cep == null)
+	{
+	 String strstop = "<input style=\"font-size:32px\" type=\"button\" value=\"start\" onclick=\"window.location='?mode=start'\" /input>";
+	 response.getWriter().println(strstop);
+	 return;
+	}
+        else
+        {
+		String strstop = "<input  style=\"font-size:32px\" type=\"button\" value=\"stop\" onclick=\"window.location='?mode=stop'\" /input>";
+		response.getWriter().println(strstop);
+	    }
+
+
+        
+        
         if(target.equals("/quizz"))
-            page_quizz.handle(cep, response, quizzId);
+            page_quizz.handle(response, quizzId);
         else
         if(target.equals("/rules"))
-            page_rules.handle(cep, response);
+            page_rules.handle( response);
         else
         if(target.equals("/window"))
-            page_window.handle(cep, response);
+            page_window.handle( response);
         else
         if(target.equals("/result"))
-            page_result.handle(cep, response, quizzId);
+            page_result.handle( response, quizzId);
         else
         if(target.equals("/clearcache"))
             picture.clearcache(response);
         else
         if(target.equals("/detail"))
-            page_detail.handle(cep, response, userId, quizzId);
+            page_detail.handle( response, userId, quizzId);
         else
-            page_status.handle(cep, response);
+        {
+            page_status.handle(response);
+        }
     }
 
     public static void main(String args[])
@@ -101,6 +139,8 @@ public class MambaLab extends AbstractHandler
                 i++;
             }
 
+   
+        MambaLab.cep_args = args;
         cep = MambalabManager.launch(args);
         System.out.println((new StringBuilder("*** Server about to start ")).append(server_port).toString());
         Server server = new Server(server_port);
@@ -120,7 +160,8 @@ public class MambaLab extends AbstractHandler
         }
     }
 
-    static Rules cep;
+    static Rules cep = null;
+    static String[] cep_args = null;
     private static final Log log = LogFactory.getLog("mambalab/MambaLab");
 
 }

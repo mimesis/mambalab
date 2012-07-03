@@ -23,10 +23,13 @@ public class page_detail
     {
     }
 
-    public static void handle(Rules cep, HttpServletResponse response, String userId, String quizzId)
+    public static void handle( HttpServletResponse response, String userId, String quizzId)
     {
+	
+	Rules cep = MambaLab.cep;
         try
         {
+            
             StringBuilder strq = new StringBuilder();
             strq.append((new StringBuilder("<h1>Detail ")).append(userId).append(" / ").append(quizzId).append("</h1>").toString());
             strq.append("<table border=\"1\"><tr>");

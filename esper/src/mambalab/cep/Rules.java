@@ -42,7 +42,7 @@ public class Rules
 
     public List<Rule> rules;
     public ArrayList<UnitTest> tests;
-    private List<String> files; 
+    public List<String> files; 
     public HashMap<String,DB> dbs;
    
     public ArrayList<StartupRule> startupRules;
@@ -131,6 +131,7 @@ public class Rules
 	return path+"/"+classname+".properties";
     }
     
+    /*
     boolean findFilename(String filename)
     {
 	if (files.contains(filename))
@@ -138,6 +139,7 @@ public class Rules
 	else
 	    return false;
     }
+    */
 
     void show()
     {
@@ -190,16 +192,17 @@ public class Rules
     boolean Load(String rulename)
     {
 	
-	String filename = getFilenameFromClassname(rulename);
+//	String filename = getFilenameFromClassname(rulename);
    
-	if (findFilename(filename))
+	if (files.contains(rulename))
 	{
-	    log.info(filename + " already loaded");
+	    log.info(rulename + " already loaded");
 	    return true;
 	}
-	files.add(filename);
+	files.add(rulename);
 
-	
+	String filename = getFilenameFromClassname(rulename);
+	  
 	LinkedProperties props = new LinkedProperties(filename);// order is important
 	
 	Enumeration<Object> e = props.keys();
@@ -240,6 +243,48 @@ public class Rules
 	// show();
     }
 
+    
+    void Deactivate(String rulename)
+    {
+
+
+   
+	if (files.contains(rulename)==false)
+	{
+	    log.info(rulename + " not found");
+	    return ;
+	}
+	files.remove(rulename);
+
+	
+	EPAdministrator admin = service.getEPAdministrator();
+	System.out.println("-- Deactivating " + rulename);
+	Iterator<Rule> safeIter = rules.iterator();
+
+	// GŽnre un event pour dŽsactiver la rule
+	/*
+	MyEvent ev = new MyEvent(0, roomId, roomInstance, "stop", className,null);
+	 System.out.println(">>" + ev.toString());
+	 this.service.getEPRuntime().sendEvent(ev);
+	*/
+	
+	while (safeIter.hasNext())
+	{
+	    Rule r = safeIter.next();
+	    if (r.className.equals(rulename))
+	    {
+		if (r.statement != null)
+		{
+	    		log.debug("x " + r.description + " = " + r.epl);
+	    		r.statement.destroy();
+	    		 safeIter.remove();
+		}
+
+	    }
+	}
+
+    }
+    
     void Reset( )
     {
 	

@@ -21,6 +21,7 @@ public class BaseFeed extends Thread
  //   @SuppressWarnings("unused")
  //   private EPServiceProvider service;
     public boolean isrunning = false;
+    public boolean isconnected = false;
     public ArrayList<RoomRef>  roomRefs;
     public String type;
 
@@ -123,7 +124,7 @@ public class BaseFeed extends Thread
 	    System.out.println(">>" + ev.toString());
 	    rules.service.getEPRuntime().sendEvent(ev);
 
-	    // rules.Suspend(param, roomId);
+	    rules.Deactivate(param);
 	    return;
 	}
 	else if (action.equals("reset"))
@@ -144,8 +145,10 @@ public class BaseFeed extends Thread
     
     public void StartFeed()
     {
-	this.start();
 	isrunning = true;
+	System.err.println("startfeed");
+	this.start();
+
     }
     
     public String getStatus()

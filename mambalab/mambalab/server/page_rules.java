@@ -20,12 +20,12 @@ import mambalab.cep.Rules;
 public class page_rules
 {
 
-    public page_rules()
+    
+    public static void handle(HttpServletResponse response)
     {
-    }
-
-    public static void handle(Rules cep, HttpServletResponse response)
-    {
+	
+	Rules cep = MambaLab.cep;
+	
         try
         {
             Iterator safeIter = cep.rules.iterator();

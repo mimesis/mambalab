@@ -208,7 +208,7 @@ public class MambalabManager
 
     public static int terminate(Rules rules)
     {
-	// cleanp
+	// cleanup
 	rules.StopFeed();
 	Thrift.Close();
 	System.out.println("--done--");
@@ -217,7 +217,13 @@ public class MambalabManager
 	    System.err.println("********* Nb failed tests :"+rules.nbfailed+" (out of "+rules.nbtest+")");
 	else
 	    System.out.println("********* Nb failed tests :"+rules.nbfailed+" (out of "+rules.nbtest+")");
-	return rules.nbfailed;
+	
+	
+	int nbfailed = rules.nbfailed;
+	rules.service.destroy();
+	rules = null;
+
+	return nbfailed;
     }
 
     public static Rules launch(String[] config_filenames)
