@@ -1,6 +1,5 @@
 package mambalab.cep;
 
-
 import java.io.IOException;
 import java.util.Map;
 
@@ -18,8 +17,7 @@ public class AMQPFeed extends BaseFeed
     Connection conn;
     Channel channel;
     QueueingConsumer consumer;
-    
-    
+
     public static String exchangeName = "brm-a";
     public static String queueName;
     public static String user;
@@ -30,11 +28,11 @@ public class AMQPFeed extends BaseFeed
     public static boolean connected = false;
     public static boolean hasbeeninterrupted = false;
     public static final String routingKey = "testroute";
-	
+
     public AMQPFeed(Rules rules)
     {
 	super("AMQP", rules);
-	
+
 	factory = new ConnectionFactory();
 
 	factory.setHost(AMQPFeed.host);
@@ -46,19 +44,18 @@ public class AMQPFeed extends BaseFeed
 	System.out.println("will connect to " + factory.getHost());
 
     }
-
-    public void run()
+/*
+    public void run_deprecated()
     {
 
-	connected=false;
+	connected = false;
 	try
 	{
-	    
-		conn = factory.newConnection();
-		channel = conn.createChannel();
-		channel.queueBind(AMQPFeed.queueName, AMQPFeed.exchangeName, routingKey);
-		consumer = new QueueingConsumer(channel);
-		
+
+	    conn = factory.newConnection();
+	    channel = conn.createChannel();
+	    channel.queueBind(AMQPFeed.queueName, AMQPFeed.exchangeName, routingKey);
+	    consumer = new QueueingConsumer(channel);
 
 	    channel.basicConsume(AMQPFeed.queueName, false, consumer);
 
@@ -67,9 +64,8 @@ public class AMQPFeed extends BaseFeed
 	}
 	catch (IOException e1)
 	{
-	    System.err.println("Failed to connect to "+factory.getHost());
+	    System.err.println("Failed to connect to " + factory.getHost());
 	}
-
 
 	System.out.println("awaiting messages from " + queueName);
 	while (isrunning && connected)
@@ -86,7 +82,7 @@ public class AMQPFeed extends BaseFeed
 	    catch (Exception ie)
 	    {
 		System.err.println("AMQP Interrupted");
-		connected=false;
+		connected = false;
 	    }
 	}
 	try
@@ -96,95 +92,77 @@ public class AMQPFeed extends BaseFeed
 	}
 	catch (IOException e)
 	{
-	   System.err.println("Failed to close");
+	    System.err.println("Failed to close");
 	}
 
 	System.out.println("-- done with AMQPFeed -- ");
 	isrunning = false;
     }
-    
-    public void run_alt()
+*/
+    public void run()
     {
 
-	while (isrunning)
+	// AMQPFeed.hasbeeninterrupted = false;
+
+	try
 	{
+	    conn = factory.newConnection();
+	    channel = conn.createChannel();
+	    channel.queueBind(AMQPFeed.queueName, AMQPFeed.exchangeName, routingKey);
+	    consumer = new QueueingConsumer(channel);
+	    System.out.println("Connected " + factory.getHost());
+	    connected = true;
 
-	    isconnected = false;
-	    AMQPFeed.hasbeeninterrupted = false;
-		   
-	    try
+	}
+	catch (IOException e)
+	{
+	    System.err.println("*** Failed to connect to " + factory.getHost());
+	    isrunning = false;
+	    return;
+	}
+
+	System.out.println("awaiting messages from " + queueName);
+
+	try
+	{
+	    channel.basicConsume(queueName, true /* autoAck */, "myConsumerTag", new DefaultConsumer(channel)
 	    {
-		conn = factory.newConnection();
-		channel = conn.createChannel();
-		channel.queueBind(AMQPFeed.queueName, AMQPFeed.exchangeName, routingKey);
-		consumer = new QueueingConsumer(channel);
-		System.out.println("Connected " + factory.getHost());
-		connected = true;
-
-	    }
-	    catch (IOException e)
-	    {
-		System.err.println("*** Failed to connect to " + factory.getHost());
-		isrunning = false;
-		return;
-	    }
-
-	    System.out.println("awaiting messages from " + queueName);
-
-	    try
-	    {
-		channel.basicConsume(queueName, true /* autoAck */, "myConsumerTag", new DefaultConsumer(channel)
+		@Override
+		public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties,
+			byte[] body)
 		{
-		    @Override
-		    public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties,
-			    byte[] body)
-		    {
 
-			processMessage(body);
-		    }
-
-		    @Override
-		    public void handleShutdownSignal(java.lang.String consumerTag, ShutdownSignalException sig)
-		    {
-			System.err.println("handleShutdownSignal");
-			AMQPFeed.hasbeeninterrupted = true;
-		    }
-		});
-		
-		
-		isconnected = true;
-		while (isrunning && AMQPFeed.hasbeeninterrupted == false)
-		{
-		    Simulator.sleep(100); 
+		    processMessage(body);
 		}
-		isconnected=false;
 
-	    }
-	    catch (IOException e1)
-	    {
-		System.err.println("failed to create default consumer");
-	    }
-	    
-	   
-	    try
-	    {
-		channel.close();
-		conn.close();
-	    }
-	    catch (IOException e)
-	    {
-		System.err.println("could not close connection");
-	    }
+		@Override
+		public void handleShutdownSignal(java.lang.String consumerTag, ShutdownSignalException sig)
+		{
+		    System.err.println("handleShutdownSignal");
+		    connected = false;
+		}
+	    });
 
-	    isrunning= false;
-	    /*
-	    if (isrunning)
+	    while (isrunning && connected)
 	    {
-		System.err.println("about to retry connecting in 30s");
-		Simulator.sleep(30 * 1000);
+		Simulator.sleep(100);
 	    }
-	    */
-	    
+	    isconnected = false;
+
+	}
+	catch (IOException e1)
+	{
+	    System.err.println("failed to create default consumer");
+	}
+
+	try
+	{
+	    channel.close();
+	    conn.close();
+	}
+	catch (IOException e)
+	{
+	    System.err.println("could not close connection");
 	}
 
 	System.out.println("-- done with AMQPFeed -- ");
@@ -227,14 +205,13 @@ public class AMQPFeed extends BaseFeed
 
 	    String roomInstance = "";
 	    String roomName = "";
-	    
+
 	    int roomId = 0;
-	    
+
 	    Map<String, Object> roomObject = (Map<String, Object>) context.get("room");
 	    if (roomObject == null)
 		return;
 
-	   
 	    Object roomIdObject = roomObject.get("id");
 	    if (roomIdObject != null)
 		try
@@ -250,7 +227,6 @@ public class AMQPFeed extends BaseFeed
 	    Object roomInstanceObject = roomObject.get("instance");
 	    if (roomInstanceObject != null)
 		roomInstance = roomInstanceObject.toString();
-
 
 	    Object roomNameObject = roomObject.get("name");
 	    if (roomNameObject != null)
@@ -274,16 +250,16 @@ public class AMQPFeed extends BaseFeed
 		}
 		else if (dataType.equals("loaded_room"))
 		{
-		    ev = new MyEvent(userId, roomId, roomName,  roomInstance, "ENTER_ROOM", "", null);
+		    ev = new MyEvent(userId, roomId, roomName, roomInstance, "ENTER_ROOM", "", null);
 		}
 		else if (dataType.equals("exit_room"))
 		{
-		    ev = new MyEvent(userId, roomId, roomName,  roomInstance, "EXIT_ROOM", "", null);
+		    ev = new MyEvent(userId, roomId, roomName, roomInstance, "EXIT_ROOM", "", null);
 		}
 	    }
 	    else if (eventName.equals("Message"))
 	    {
-	;
+		;
 		String messageString = "";
 		Object messageObject = data.get("message");
 		if (data.get("message") != null)
