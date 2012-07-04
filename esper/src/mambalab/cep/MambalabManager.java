@@ -48,6 +48,7 @@ public class MambalabManager
 	terminate(rules);
     }
 
+    @SuppressWarnings("unchecked")
     public static void loadConfigFile(String config_filename, Configuration configuration, Rules rules)
     {
 	// Load config file
@@ -78,7 +79,15 @@ public class MambalabManager
 		log.info("wserver :" + WServer.host + ":" + WServer.port);
 
 		// Test la connnection
-		WServer.Command("facebook-user-data", "findByFacebookId", "[698084178]");
+		try
+		{
+		    WServer.Command("facebook-user-data", "findByFacebookId", "[698084178]");
+		}
+		catch (Exception e)
+		{
+		    System.err.println("Wserver test failed : "+e.toString());
+		    
+		}
 		
 	    }
 
@@ -89,25 +98,20 @@ public class MambalabManager
 	    {
 		String thrift_host = thrift.get("host").toString();
 		int thrift_port = Integer.parseInt(thrift.get("port").toString());
-		Thrift.Init(thrift_host, thrift_port);
-
+		
+		
 		try
 		{
+		    Thrift.Init(thrift_host, thrift_port);
 		    if (Thrift.client != null)
 		    {
 			int nb = Thrift.client.countAllPlayers();
 			System.out.println(nb);
 		    }
 		}
-		catch (LTTException e)
+		catch (Exception e)
 		{
-		    // TODO Auto-generated catch block
-		    e.printStackTrace();
-		}
-		catch (TException e)
-		{
-		    // TODO Auto-generated catch block
-		    e.printStackTrace();
+		    System.err.println("Thrift test failed "+e.toString());
 		}
 
 	    }
@@ -124,8 +128,22 @@ public class MambalabManager
 		while (iter.hasNext())
 		{
 		    Map<String, Object> startup = iter.next();
-		    String name = startup.get("name").toString();
-		    rules.addStartup(name, null, null, null);
+		    String ruleName = startup.get("name").toString();
+		     String roomName = "n/a";
+		    String roomInstance = "n/a"; 
+		    
+		    try 
+		    {
+			roomName = startup.get("roomName").toString();
+		    }
+		    catch (Exception e) {}
+		    try 
+		    {
+			roomInstance = startup.get("roomInstance").toString();
+		    }
+		    catch (Exception e) {}
+		    
+		    rules.addStartup(ruleName, roomName, roomInstance);
 		}
 	    }
 	    // AMQP
@@ -211,19 +229,12 @@ public class MambalabManager
 	// cleanup
 	rules.StopFeed();
 	Thrift.Close();
-	System.out.println("--done--");
+	System.out.println("--done--");	
 	
-	if(rules.nbfailed>0)
-	    System.err.println("********* Nb failed tests :"+rules.nbfailed+" (out of "+rules.nbtest+")");
-	else
-	    System.out.println("********* Nb failed tests :"+rules.nbfailed+" (out of "+rules.nbtest+")");
-	
-	
-	int nbfailed = rules.nbfailed;
 	rules.service.destroy();
 	rules = null;
 
-	return nbfailed;
+	return 0;
     }
 
     public static Rules launch(String[] config_filenames)

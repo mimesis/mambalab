@@ -1,20 +1,11 @@
-// Decompiled by Jad v1.5.8g. Copyright 2001 Pavel Kouznetsov.
-// Jad home page: http://www.kpdus.com/jad.html
-// Decompiler options: packimports(3) 
-// Source File Name:   page_result.java
-
 package mambalab.server;
 
 import java.io.*;
 import java.sql.*;
-import java.util.HashMap;
 import javax.servlet.http.HttpServletResponse;
 
 import mambalab.cep.DB;
 import mambalab.cep.Rules;
-
-// Referenced classes of package mambalab:
-//            Rules, DB
 
 public class page_result
 {

@@ -7,27 +7,23 @@ import java.util.List;
 
 import com.espertech.esper.client.EPAdministrator;
 import com.espertech.esper.client.EPServiceProvider;
-import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.sql.Statement;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 class StartupRule
 {
-    public String name;
-    public ArrayList<String> roomIds;
-    public ArrayList<String> roomClasses;
-    public ArrayList<Integer> userIds;  
-
-    public StartupRule(String name,ArrayList<String> roomIds,ArrayList<String> roomClasses,ArrayList<Integer> userIds)
+    public String ruleName;
+    public String roomInstance;
+    public String roomName;
+  
+    public StartupRule(String ruleName, String roomName, String roomInstance)
     {
-	this.name = name;
-	this.roomIds= roomIds;
-	this.roomClasses = roomClasses;
-	this.userIds = userIds;
+	this.ruleName = ruleName;
+	this.roomName = roomName;
+	this.roomInstance = roomInstance;
     }
 }
 
@@ -103,14 +99,14 @@ public class Rules
 	
     }
     
-    void addStartup(String name,ArrayList<String> roomIds,ArrayList<String> roomClasses,ArrayList<Integer> userIds)
+    void addStartup(String ruleName,String roomName, String roomInstance)
     {
-	StartupRule sr = new StartupRule(name,roomIds,roomClasses,userIds);
+	StartupRule sr = new StartupRule(ruleName,roomName,roomInstance);
 	startupRules.add(sr);
 	
     }
     
-    Rule findOrCreateRule(String className, String name)
+    public Rule findOrCreateRule(String className, String name)
     {
 	Iterator<Rule> safeIter = rules.iterator();
 
@@ -131,15 +127,6 @@ public class Rules
 	return path+"/"+classname+".properties";
     }
     
-    /*
-    boolean findFilename(String filename)
-    {
-	if (files.contains(filename))
-	    return true;
-	else
-	    return false;
-    }
-    */
 
     void show()
     {
@@ -192,8 +179,6 @@ public class Rules
     boolean Load(String rulename)
     {
 	
-//	String filename = getFilenameFromClassname(rulename);
-   
 	if (files.contains(rulename))
 	{
 	    log.info(rulename + " already loaded");
@@ -231,23 +216,16 @@ public class Rules
 		r.loglevel = prop;
 	    else if (p.equals("action"))
 		r.action = prop;
-	    /*
-	    else if (p.equals("listener"))
-		r.listener = prop;
-		*/
 	    else if (p.equals("sql"))
 		r.sql = prop;
 	}
 
 	return true;
-	// show();
     }
 
     
     void Deactivate(String rulename)
     {
-
-
    
 	if (files.contains(rulename)==false)
 	{
@@ -257,7 +235,6 @@ public class Rules
 	files.remove(rulename);
 
 	
-	EPAdministrator admin = service.getEPAdministrator();
 	System.out.println("-- Deactivating " + rulename);
 	Iterator<Rule> safeIter = rules.iterator();
 
@@ -314,13 +291,12 @@ public class Rules
 	 while (iter.hasNext())
 	 {
 	     StartupRule sr = iter.next();
-	     String cn = sr.name;
-	     Load(cn);
-	     Activate(cn,0,"*");
+	     Load(sr.ruleName);
+	     Activate(sr.ruleName,0,sr.roomName,sr.roomInstance);
 	 }
     }
     
-    void Activate( String className, int roomId, String roomInstance)
+    void Activate( String className,int roomId,String roomName, String roomInstance)
     {
 
 	EPAdministrator admin = service.getEPAdministrator();
@@ -344,7 +320,7 @@ public class Rules
 	}
 	
 	// GŽnre un event pour initialiser la rule
-	MyEvent ev = new MyEvent(0, roomId, roomInstance, "start", className,null);
+	MyEvent ev = new MyEvent(0, roomId, roomName, roomInstance, "start", className,null);
 	 System.out.println(">>" + ev.toString());
 	 this.service.getEPRuntime().sendEvent(ev);
 	//feed.addRoom(roomId);

@@ -5,9 +5,8 @@
   	"startup" : [
   		{ 
   			"name": "admin",
-  			"roomIds" : [ ],
-  			"roomClasses" : [ ],
-  			"userIds" : [ ]
+  			"roomName" : "*",
+  			"roomInstance" : "#"
   			}
   			] 
   	}

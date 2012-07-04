@@ -6,22 +6,19 @@
 package mambalab.server;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.*;
 import java.util.*;
 import javax.servlet.http.HttpServletResponse;
 
 import mambalab.cep.AMQPFeed;
 import mambalab.cep.DB;
-import mambalab.cep.MambalabManager;
+
 import mambalab.cep.RoomRef;
 import mambalab.cep.Rules;
 import mambalab.cep.Thrift;
 import mambalab.cep.WServer;
 
-// Referenced classes of package mambalab:
-//            WServer, Thrift, AMQPFeed, Rules, 
-//            BaseFeed, RoomRef, DB
+
 
 public class page_status
 {
@@ -56,16 +53,20 @@ public class page_status
             strf.append(cep.feed.getStatus());
             strc.append("</pre>");
             response.getWriter().println(strf);
-            Iterator ii = cep.feed.roomRefs.iterator();
+            
             StringBuilder strsr = new StringBuilder();
             strsr.append("<h2>Rooms</h2><pre>");
             RoomRef r;
-            for(; ii.hasNext(); strsr.append((new StringBuilder(String.valueOf(r.instance))).append("=").append(r.className).append("\n").toString()))
-                r = (RoomRef)ii.next();
+            Iterator<RoomRef> ii = cep.feed.roomRefs.iterator();
+            while( ii.hasNext() )
+            {
+        	r = (RoomRef)ii.next();
+        	strsr.append( r.roomInstance+"/"+r.roomName+ "=" + r.ruleName+ "\n");
+            }   
 
             StringBuilder strr = new StringBuilder();
             strr.append("<h2>Rules</h2><pre>");
-            Iterator files_iter = cep.files.iterator();
+            Iterator<String> files_iter = cep.files.iterator();
             
             while( files_iter.hasNext())
             {
@@ -82,11 +83,11 @@ public class page_status
             strq.append("<table border=\"1\"><tr>");
             strq.append("<td><b>QuizzId</td>");
             strq.append("<td><b>RoomId</b></td>");
-            strq.append("<td><b>RoomInstance</b></td>");
+            strq.append("<td><b>RoomName</b></td>");
             strq.append("<td><b>Enabled</b></td>");
             strq.append("<td><b>Results</b></td>");
             DB db = (DB)cep.dbs.get("esper");
-            String sql = "select quizz_id,room_id,room_instance,activated from room_quizz";
+            String sql = "select quizz_id,room_id,room_name,activated from room_quizz";
             db.statement.execute(sql);
             String quizzId;
             for(ResultSet rs = db.statement.getResultSet(); rs.next(); strq.append((new StringBuilder("<td><a href=\"result?quizzId=")).append(quizzId).append("\">view</a></td>").toString()))
@@ -94,12 +95,12 @@ public class page_status
                 strq.append("<tr>");
                 quizzId = rs.getString(1);
                 String roomId = rs.getString(2);
-                String roomInstance= rs.getString(3);
+                String roomName= rs.getString(3);
                 String activated = rs.getString(4);
-                strq.append((new StringBuilder("<td><a href=\"quizz?quizzId=")).append(quizzId).append("\">").append(quizzId).append("</a></td>").toString());
-                strq.append((new StringBuilder("<td>")).append(roomId).append("</td>").toString());
-                strq.append((new StringBuilder("<td>")).append(roomInstance).append("</td>").toString());
-                strq.append((new StringBuilder("<td>")).append(activated).append("</td>").toString());
+                strq.append( "<td><a href=\"quizz?quizzId="+quizzId+"\">"+quizzId+"</a></td>");
+                strq.append( "<td>" + roomId + "</td>");
+                strq.append( "<td>" + roomName+ "</td>");
+                strq.append( "<td>" + activated + "</td>");
             }
             response.getWriter().println(strq);
             

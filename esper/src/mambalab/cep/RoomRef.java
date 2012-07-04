@@ -2,13 +2,16 @@ package mambalab.cep;
 
 public class RoomRef
 {
-    public String instance;
-    public String className;
-    public int id;
-    public RoomRef(int id, String instance,String className)
+    public int roomId;
+    public String roomName;
+    public String roomInstance;
+    public String ruleName;
+    
+    public RoomRef(int roomId, String roomName, String roomInstance,String ruleName)
     {
-	this.className = className;
-	this.instance =instance;
-	this.id = id;
+	this.roomId = roomId;
+	this.roomName = roomName;
+	this.roomInstance = roomInstance;
+	this.ruleName = ruleName;
     }
 }

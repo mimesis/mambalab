@@ -7,13 +7,13 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import com.espertech.esper.client.EPServiceProvider;
 
 class SimulatorData
 {
     int delay;
     int userId;
     int roomId;
+    String roomName;
     String roomInstance;
     String eventName;
     String eventParam;
@@ -35,12 +35,13 @@ class SimulatorData
 	}
 	catch(Exception e) {};
 
-	this.roomInstance = "";
+
+	this.roomName = "";
 	if (ar[2]!=null)
-	    this.roomInstance = ar[2].trim();
+	    this.roomName = ar[2].trim();
 	
-	
-	this.roomId = 0;
+	this.roomInstance = this.roomName +"_1";
+	this.roomId = 1;
 	
 	this.eventName = ar[3].trim();
 	if (ar.length > 4)
@@ -54,7 +55,8 @@ class SimulatorData
       public String toString() 
       { 
 	  return "eventName:" + this.eventName +
-    ",userId:" + this.userId + 
+    ",userId:" + this.userId +
+    ",roomName:" + this.roomName +
     ",roomId:" + this.roomId +
     ",roomInstance:" + this.roomInstance
     + ",eventParam:" +  this.eventParam;
@@ -150,7 +152,7 @@ class Simulator extends BaseFeed
 	    SimulatorData sd = safeIter.next();
 	    sleep(sd.delay);
 	    
-//	    System.err.println("processing :"+sd.toString());
+	//    System.err.println("processing :"+sd.toString());
 
 	    if ( sd.eventName.equals("TEST"))
 	    {
@@ -168,11 +170,11 @@ class Simulator extends BaseFeed
 	    else
 	    if ( sd.eventName.equals("SAY") && sd.eventParam.startsWith("!!!"))
 	    {
-		executeCommand(sd.eventParam.substring(3), sd.userId, sd.roomId,sd.roomInstance);
+		executeCommand(sd.eventParam.substring(3), sd.userId, sd.roomId,sd.roomName,sd.roomInstance);
 	    }
 	    else
 	    {
-		MyEvent ev = new MyEvent(sd.userId, sd.roomId, sd.roomInstance, sd.eventName, sd.eventParam,sd.eventParam2);
+		MyEvent ev = new MyEvent(sd.userId, sd.roomId, sd.roomName,sd.roomInstance, sd.eventName, sd.eventParam,sd.eventParam2);
 
 		if (validateEvent(ev))
 		{
@@ -184,6 +186,11 @@ class Simulator extends BaseFeed
 	    }
 
 	}
+
+	if(rules.nbfailed>0)
+	    System.err.println("********* Nb failed tests :"+rules.nbfailed+" (out of "+rules.nbtest+")");
+	else
+	    System.out.println("********* Nb failed tests :"+rules.nbfailed+" (out of "+rules.nbtest+")");
 
 	System.out.println("---Simulator ended---");
     }

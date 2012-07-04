@@ -1,20 +1,12 @@
-// Decompiled by Jad v1.5.8g. Copyright 2001 Pavel Kouznetsov.
-// Jad home page: http://www.kpdus.com/jad.html
-// Decompiler options: packimports(3) 
-// Source File Name:   picture_quizz.java
 
 package mambalab.server;
 
-import java.io.PrintStream;
 import java.sql.*;
-import java.util.HashMap;
 import javax.servlet.http.HttpServletResponse;
 
 import mambalab.cep.DB;
 import mambalab.cep.Rules;
 
-// Referenced classes of package mambalab:
-//            Rules, DB, picture
 
 public class picture_quizz
 {

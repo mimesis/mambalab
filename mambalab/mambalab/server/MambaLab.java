@@ -52,12 +52,21 @@ public class MambaLab extends AbstractHandler
             return;
         }
         response.setContentType("text/html;charset=utf-8");
+        if(target.equals("/check"))
+        {
+            page_check.handle( response);
+            return ;
+        }
+        
+    
         response.getWriter().println("<h1>MambaLab Control Panel</h1>");
         response.getWriter().println("<a href=\"/\">Status</a> ");
         response.getWriter().println("<a href=\"/result\">Results</a> ");
+        response.getWriter().println("<a href=\"/check\">Check</a> ");
         response.getWriter().println(" --  ");
         response.getWriter().println("<a href=\"/rules\">Rules</a> ");
         response.getWriter().println("<a href=\"/window\">Window</a> ");
+        response.getWriter().println(" --  ");
         response.getWriter().println("<a href=\"/clearcache\">Clear Cache</a> ");
         String userId = baseRequest.getParameter("userId");
         String quizzId = baseRequest.getParameter("quizzId");

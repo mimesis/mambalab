@@ -1,13 +1,9 @@
-// Decompiled by Jad v1.5.8g. Copyright 2001 Pavel Kouznetsov.
-// Jad home page: http://www.kpdus.com/jad.html
-// Decompiler options: packimports(3) 
-// Source File Name:   page_quizz.java
 
 package mambalab.server;
 
 import java.io.*;
 import java.sql.*;
-import java.util.HashMap;
+
 import javax.servlet.http.HttpServletResponse;
 
 import mambalab.cep.DB;
@@ -17,8 +13,6 @@ import mambalab.cep.Rules;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-// Referenced classes of package mambalab:
-//            Rules, DB, GenericListener
 
 public class page_quizz
 {
@@ -47,7 +41,7 @@ public class page_quizz
             strq.append("</tr>");
             DB db = (DB)cep.dbs.get("esper");
             String sql = (new StringBuilder("select quizz_id,question_id,question_name,quizz_type, answer,notification,panneau1,panneau2 from quizz where quizz_id='")).append(quizzId).append("' order by quizz_id,question_id").toString();
-            System.err.println(sql);
+            log.debug(sql);
             try
             {
                 db.statement.execute(sql);

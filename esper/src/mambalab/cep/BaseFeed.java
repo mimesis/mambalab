@@ -5,40 +5,16 @@ import java.util.Iterator;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.espertech.esper.client.EPRuntime;
-import com.espertech.esper.client.EPServiceProvider;
-
-
 
 public class BaseFeed extends Thread
-{
-    
+{    
     private static final Log log = LogFactory.getLog(BaseFeed.class);
 
-
     public Rules rules;
-//    protected EPRuntime rt;
- //   @SuppressWarnings("unused")
- //   private EPServiceProvider service;
     public boolean isrunning = false;
     public boolean isconnected = false;
     public ArrayList<RoomRef>  roomRefs;
     public String type;
-
-    
-    RoomRef findRoomRefByRoomInstance(String roomInstance)
-    {
-	Iterator<RoomRef> safeIter = roomRefs.iterator();
-
-	while (safeIter.hasNext())
-	{
-	    RoomRef r = safeIter.next();
-	    if (r.instance.equals(roomInstance) )
-		return r;
-	}
-	return null;
-    }
-
     
     public BaseFeed(String type,Rules rules)
     {
@@ -50,11 +26,11 @@ public class BaseFeed extends Thread
     
 
 
-    public void addRoom(int id, String instance,String classname) 
+    public void addRoom(int roomId, String roomName, String roomInstance,String ruleName) 
     {
-	RoomRef  r = new RoomRef(id,instance,classname);
+	RoomRef  r = new RoomRef(roomId,roomName,roomInstance,ruleName);
 	roomRefs.add(r);
-	log.info("### roomID "+id+"/"+instance+" ruled by "+classname);
+	log.info("### roomID "+roomId+"/"+roomName+"/"+roomInstance+ " ruled by "+ruleName);
     }
 
 
@@ -83,21 +59,25 @@ public class BaseFeed extends Thread
 */
     public boolean validateEvent(MyEvent event)
     {
-	/*
-	// laise passer les event systèmes
-	if ( event.eventName.equals("ESPER") )
-	    return true;
-	*/
-	// à optimiser
-	RoomRef  r = findRoomRefByRoomInstance(event.roomInstance);
-	if (r==null)
-	    return false;
 	
-	return true;
+	Iterator<RoomRef> safeIter = roomRefs.iterator();
+
+	while (safeIter.hasNext())
+	{
+	    RoomRef r = safeIter.next();
+	    if (r.roomName.equals(event.roomName))
+		return true;  
+	    if (r.roomInstance.equals(event.roomInstance) )
+		return true;
+	    if (r.roomId == event.roomId )
+		return true;   
+	}
+	
+	return false;
     }
     
 
-    public void executeCommand(String cmd,int userId, int roomId, String roomInstance)
+    public void executeCommand(String cmd,int userId, int roomId, String roomName, String roomInstance)
     {
 	  
 	String[] args = cmd.split(" ");
@@ -110,7 +90,7 @@ public class BaseFeed extends Thread
 	if (action.equals("start"))
 	{
 	    rules.Load(param);
-	    rules.Activate(param, roomId,roomInstance);
+	    rules.Activate(param, roomId,roomName,roomInstance);
 /*
 	    MyEvent ev = new MyEvent(userId, roomId, null, "init", param,null);
 	    System.out.println(">>" + ev.toString());
@@ -120,7 +100,7 @@ public class BaseFeed extends Thread
 	}
 	if (action.equals("stop"))
 	{
-	    MyEvent ev = new MyEvent(userId, roomId, null, "stop", param,null);
+	    MyEvent ev = new MyEvent(userId, roomId, null, null, "stop", param,null);
 	    System.out.println(">>" + ev.toString());
 	    rules.service.getEPRuntime().sendEvent(ev);
 

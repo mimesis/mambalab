@@ -1,30 +1,17 @@
-// Decompiled by Jad v1.5.8g. Copyright 2001 Pavel Kouznetsov.
-// Jad home page: http://www.kpdus.com/jad.html
-// Decompiler options: packimports(3) 
-// Source File Name:   page_window.java
 
 package mambalab.server;
 
 import com.espertech.esper.client.*;
-import com.espertech.esper.client.util.EventRenderer;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.Iterator;
-import java.util.List;
 import javax.servlet.http.HttpServletResponse;
-
 import mambalab.cep.Rule;
 import mambalab.cep.Rules;
 
-// Referenced classes of package mambalab:
-//            Rules, Rule
 
 public class page_window
 {
 
-    public page_window()
-    {
-    }
 
     public static void display(Rules cep,HttpServletResponse response, boolean isWindow)
     {
@@ -32,7 +19,7 @@ public class page_window
 	
         try
         {
-            for(Iterator safeIter = cep.rules.iterator(); safeIter.hasNext();)
+            for(Iterator<Rule> safeIter = cep.rules.iterator(); safeIter.hasNext();)
             {
                 Rule r = (Rule)safeIter.next();
                 if(r.statement != null)

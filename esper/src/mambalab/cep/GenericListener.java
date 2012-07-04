@@ -1,4 +1,4 @@
-	package mambalab.cep;
+package mambalab.cep;
 
 import com.espertech.esper.client.EPServiceProvider;
 
@@ -6,9 +6,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-
-import javax.xml.soap.Text;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -32,15 +29,15 @@ public class GenericListener implements UpdateListener
 
 	if (alt.startsWith("http"))
 	    return alt;
-	
+
 	StringBuilder textgenerator = new StringBuilder();
 
 	textgenerator.append(picture_server_name);
 	textgenerator.append("/pic/");
-	
+
 	try
 	{
-	    String line = alt.replaceAll("\n"," ").replaceAll("\r"," "); 
+	    String line = alt.replaceAll("\n", " ").replaceAll("\r", " ");
 	    textgenerator.append(URLEncoder.encode(line, "UTF-8"));
 	}
 	catch (UnsupportedEncodingException e)
@@ -170,23 +167,33 @@ public class GenericListener implements UpdateListener
 		    {
 			int roomId = 0;
 			String roomInstance = "";
+			String roomName = "";
 
-			Object roomIdObject = newEvents[i].get("roomId");
-			if (roomIdObject != null)
+			try
 			{
-			    try
-			    {
-			    roomId= Integer.parseInt(roomIdObject.toString());
+			    roomId = Integer.parseInt(newEvents[i].get("roomId").toString());
 			}
-			catch(Exception e) {};
+			catch (Exception e)
+			{
 			}
-		
-			Object roomInstanceObject = newEvents[i].get("roomInstance");
-			if (roomInstanceObject != null)
-			    roomInstance = roomInstanceObject.toString().trim();
 
-			rules.feed.addRoom(roomId,roomInstance, rule.className);
-			;
+			try
+			{
+			    roomInstance = newEvents[i].get("roomInstance").toString();
+			}
+			catch (Exception e)
+			{
+			}
+			try
+			{
+			    roomName = newEvents[i].get("roomName").toString();
+			}
+			catch (Exception e)
+			{
+			}
+
+			rules.feed.addRoom(roomId, roomName, roomInstance, rule.className);
+
 		    }
 		}
 		if (oldEvents != null)
@@ -256,8 +263,7 @@ public class GenericListener implements UpdateListener
 		}
 		catch (UserDontExistException e)
 		{
-		    // TODO Auto-generated catch block
-		    e.printStackTrace();
+		    System.err.println("user does not exist "+e.toString());
 		}
 		catch (TException e)
 		{
@@ -276,36 +282,24 @@ public class GenericListener implements UpdateListener
 		String formattedurl = "";
 		if (url.startsWith("http") == false)
 		{
-			Object panelObject = newEvents[0].get("panelId");
-			Object quizzObject = newEvents[0].get("quizzId");
-			Object questionidObject = newEvents[0].get("questionId");
-			/*
-			if (panelObject ==null || quizzObject == null || questionidObject ==null)
-			    return;
-*/
-			formattedurl  = picture_server_name
-					+ "/pq/"
-					+ quizzObject.toString()
-					+ "/"
-					+ questionidObject.toString()
-					+ "/"
-					+ panelObject.toString();
-			//System.err.println(formattedurl);    
+		    Object panelObject = newEvents[0].get("panelId");
+		    Object quizzObject = newEvents[0].get("quizzId");
+		    Object questionidObject = newEvents[0].get("questionId");
+		    formattedurl = picture_server_name + "/pq/" + quizzObject.toString() + "/" + questionidObject.toString() + "/" + panelObject.toString();
+		    // System.err.println(formattedurl);
 		}
 		else
-		   formattedurl = url; //GenericListener.getURLFromString(url);
+		    formattedurl = url; // GenericListener.getURLFromString(url);
 
-		    	
 		Object targetObject = newEvents[0].get("target");
-		if (targetObject==null)
+		if (targetObject == null)
 		{
 		    System.err.println("missing target in ChangeContent");
 		    return;
 		}
-		
-		
+
 		String target = targetObject.toString();
-		
+
 		int roomId = 0;
 		try
 		{
@@ -313,22 +307,32 @@ public class GenericListener implements UpdateListener
 		}
 		catch (java.lang.NumberFormatException e)
 		{
-		    // System.err.println("malformed roomId:" +
-		    // newEvents[0].get("roomId").toString());
-		    // return ;
 		}
 
 		String roomInstance = newEvents[0].get("roomInstance").toString();
-		
-		System.out.println("*** ChangeContent *** for pannel:" + target + ", in room " + roomId + "/"+roomInstance+ ", with content " + formattedurl);
+
+		System.out.println("*** ChangeContent *** for pannel:" + target + ", in room " + roomId + "/" + roomInstance + ", with content " + formattedurl);
 		if (roomId == 0)
 		    return;
 
-	// Method updateDecor
-	/*
+		// Method updateDecor
+		/*
+		 * StringBuilder str = new StringBuilder(); str.append("[");
+		 * str.append(roomId); str.append(","); str.append("\"" + target
+		 * + "\""); // decorcode str.append(","); str.append("[\"" +
+		 * formattedurl + "\"],"); // playlist str.append("null"); //
+		 * volume str.append("]");
+		 * 
+		 * WServer.Command("room-decor", "updateDecor", str.toString());
+		 */
+		// Method updateDecorForRoomInstance(roomId, instanceName, code,
+		// playlist, volume)
+
 		StringBuilder str = new StringBuilder();
 		str.append("[");
 		str.append(roomId);
+		str.append(",");
+		str.append("\"" + roomInstance + "\"");
 		str.append(",");
 		str.append("\"" + target + "\""); // decorcode
 		str.append(",");
@@ -336,24 +340,17 @@ public class GenericListener implements UpdateListener
 		str.append("null"); // volume
 		str.append("]");
 
-		WServer.Command("room-decor", "updateDecor", str.toString());
-	*/
-	// Method updateDecorForRoomInstance(roomId, instanceName, code, playlist, volume)
-	
-			StringBuilder str = new StringBuilder();
-			str.append("[");
-			str.append(roomId);
-			str.append(",");
-			str.append("\""+roomInstance+"\"");
-			str.append(",");
-			str.append("\"" + target + "\""); // decorcode
-			str.append(",");
-			str.append("[\"" + formattedurl + "\"],"); // playlist
-			str.append("null"); // volume
-			str.append("]");
-
-			WServer.Command("room-decor", "updateDecorForRoomInstance", str.toString());
-		
+		if (WServer.host != null)
+		{
+		try
+		{
+		    WServer.Command("room-decor", "updateDecorForRoomInstance", str.toString());
+		}
+		catch (Exception e)
+		{
+		    System.err.println("wserver failed :"+e.toString());
+		}
+		}
 	    }
 
 	    else

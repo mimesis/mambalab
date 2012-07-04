@@ -19,7 +19,8 @@ public class WServer
     public static String host = null;
     public static int port;
 
-    static public Map<String, Object> Command(String service, String command, String params)
+    @SuppressWarnings("unchecked")
+    static public Map<String, Object> Command(String service, String command, String params) throws Exception
     {
 
 	try
@@ -34,7 +35,7 @@ public class WServer
 
 	    System.out.println(json);
 	    if (host==null)
-		return null;
+		throw new Exception();
 
 	    String url = "http://" + host + ":" + port + "/service/v1/" + service + "/rpc";
 
@@ -60,6 +61,12 @@ public class WServer
 	    return map_ret;
 
 	}
+	catch(Exception e)
+	{
+	    System.err.println("failed");
+	    throw e;
+	}
+	/*
 	catch (MalformedURLException e)
 	{
 	    // TODO Auto-generated catch block
@@ -75,7 +82,8 @@ public class WServer
 	    // TODO Auto-generated catch block
 	    e.printStackTrace();
 	}
-	return null;
+	*/
+	//return null;
     }
 
     public static boolean bufferedCopyStream(InputStream inStream, OutputStream outStream) throws Exception
