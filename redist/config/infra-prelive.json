@@ -1,19 +1,19 @@
 {
-  "infra": "live",
+  "infra": "prelive",
 
   "wserver" : 
   {
-  		"host" : "wserver-a-newlive.mambanation.net",
+  		"host" : "wserver-a-prelive.mambanation.net",
 		"port" : 3060
   	},
   "thrift" : 
   {
-  	"host" :  "ltt-server-a-newlive.mambanation.net",
+  	"host" :  "ltt-server-a-prelive.mambanation.net",
   	"port" : 3040
   	},
   "amqp" : 
   {
-  	"host" : "mq-a-newlive.mambanation.net", 
+  	"host" : "mq-a-prelive.mambanation.net", 
   	"user": "guest",
   	"password" : "guest",
   	"virtualHost" : "/",

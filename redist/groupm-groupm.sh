@@ -1,1 +1,1 @@
-sudo java -jar cep.jar -port 80 -server http://mambalab.mambanation.net config/infra-groupm.json config/server-groupm.json config/rules-mambalab.json 
+sudo nohup  java -jar cep.jar -port 2002 -server http://mambalab.mambanation.net config/infra-groupm.json config/server-groupm.json config/rules-mambalab.json > log/log.txt  &
