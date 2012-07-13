@@ -1,7 +1,3 @@
-// Decompiled by Jad v1.5.8g. Copyright 2001 Pavel Kouznetsov.
-// Jad home page: http://www.kpdus.com/jad.html
-// Decompiler options: packimports(3) 
-// Source File Name:   MambaLab.java
 
 package mambalab.server;
 
@@ -19,17 +15,8 @@ import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.AbstractHandler;
 
-// Referenced classes of package mambalab:
-//            picture, picture_quizz, page_quizz, page_rules, 
-//            page_window, page_result, page_detail, page_status, 
-//            MambalabManager, Rules
-
 public class MambaLab extends AbstractHandler
 {
-
-    public MambaLab()
-    {
-    }
 
     public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response)
         throws IOException, ServletException
@@ -54,7 +41,8 @@ public class MambaLab extends AbstractHandler
         response.setContentType("text/html;charset=utf-8");
         if(target.equals("/check"))
         {
-            page_check.handle( response);
+            page_check pc = new page_check();
+            pc.handle( response);
             return ;
         }
         
@@ -151,26 +139,16 @@ public class MambaLab extends AbstractHandler
    
         MambaLab.cep_args = args;
         cep = MambalabManager.launch(args);
-        System.out.println((new StringBuilder("*** Server about to start ")).append(server_port).toString());
         Server server = new Server(server_port);
         server.setHandler(new MambaLab());
-        System.out.println((new StringBuilder("*** Server starting ")).append(server_port).toString());
         server.start();
         System.out.println((new StringBuilder("*** Server started ")).append(server_port).toString());
         server.join();
-        System.out.println("...press enter to stop simulation...");
-        try
-        {
-            System.in.read();
-        }
-        catch(IOException e)
-        {
-            log.error((new StringBuilder("Exception reading keyboard input: ")).append(e.getMessage()).toString(), e);
-        }
+        
     }
 
     static Rules cep = null;
     static String[] cep_args = null;
-    private static final Log log = LogFactory.getLog("mambalab/MambaLab");
+   // private static final Log log = LogFactory.getLog("mambalab/MambaLab");
 
 }

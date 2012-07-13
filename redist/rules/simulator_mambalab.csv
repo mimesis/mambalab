@@ -1,6 +1,7 @@
 delay;user_id;room_id;event_name;event_param;event_param2
 
 1000;0;0;SAY;!!!start mambalab
+1000;0;0;SAY;!!!status
 
 1000;;;TEST;displaymessage
 0;;;TEST;firstquestion
@@ -8,6 +9,21 @@ delay;user_id;room_id;event_name;event_param;event_param2
 ;;;VALIDATE;
 
 1000;100;TEST_ROOM;CLICK_PANEL;10000;Panel1Code
+
+1000;100;TEST_ROOM2;ENTER_ROOM;
+1000;100;TEST_ROOM2;SAY;/restart
+1000;100;TEST_ROOM2;SAY;oui
+
+1000;100;TEST_ROOM;ENTER_ROOM;
+1000;100;TEST_ROOM2;ENTER_ROOM;
+
+;;;TEST;nomorequestion
+1000;100;TEST_ROOM2;SAY;oui
+;;;VALIDATE;
+
+1000;100;TEST_ROOM;ENTER_ROOM;
+
+
 
 1000;100;TEST_ROOM;SAY;PUMA
 1000;100;TEST_ROOM;SAY;SFR

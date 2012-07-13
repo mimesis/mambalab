@@ -16,7 +16,7 @@
    </logger>
 
 	<logger name="mambalab">
-      <level value="DEBUG"/>
+      <level value="WARN"/>
    </logger>
 
    <root>

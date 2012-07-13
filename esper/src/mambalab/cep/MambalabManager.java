@@ -14,11 +14,11 @@ import com.fasterxml.jackson.core.JsonParser.Feature;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import net.blackmamba.thrift.ltt.LTTException;
+//import net.blackmamba.thrift.ltt.LTTException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.thrift.TException;
+//import org.apache.thrift.TException;
 
 public class MambalabManager
 {

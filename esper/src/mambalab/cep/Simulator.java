@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -151,9 +152,8 @@ class Simulator extends BaseFeed
 	    }
 	    SimulatorData sd = safeIter.next();
 	    sleep(sd.delay);
-	    
-	//    System.err.println("processing :"+sd.toString());
-
+	    lastEvent = new Date();
+	  
 	    if ( sd.eventName.equals("TEST"))
 	    {
 		boolean b = true;
@@ -178,11 +178,14 @@ class Simulator extends BaseFeed
 
 		if (validateEvent(ev))
 		{
+		    lastValidEvent = new Date();
 		    System.out.println(">>" + ev.toString());
 		    rules.service.getEPRuntime().sendEvent(ev);
 		}
 		else
+		{
 		    System.out.println("[~~]" + ev.toString());
+		}
 	    }
 
 	}

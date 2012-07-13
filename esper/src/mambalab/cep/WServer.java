@@ -2,13 +2,14 @@ package mambalab.cep;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Map;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -18,6 +19,7 @@ public class WServer
 {
     public static String host = null;
     public static int port;
+    private static final Log log = LogFactory.getLog(WServer.class);
 
     @SuppressWarnings("unchecked")
     static public Map<String, Object> Command(String service, String command, String params) throws Exception
@@ -33,7 +35,7 @@ public class WServer
 	    json.append("\"id\": 1");
 	    json.append("}");
 
-	    System.out.println(json);
+	    log.debug(json);
 	    if (host==null)
 		throw new Exception();
 
@@ -56,34 +58,17 @@ public class WServer
 	    responseBytes.close();
 	    ObjectMapper mapper = new ObjectMapper();
 	    String json_ret = new String(responseBytes.toByteArray(), "UTF-8");
-	    System.out.println("wserver:" + json_ret);
+	    log.debug("wserver:" + json_ret);
 	    Map<String, Object> map_ret = mapper.readValue(json_ret, Map.class);
 	    return map_ret;
 
 	}
 	catch(Exception e)
 	{
-	    System.err.println("failed");
+	    System.err.println("wserver query failed: "+command+", "+params);
 	    throw e;
 	}
-	/*
-	catch (MalformedURLException e)
-	{
-	    // TODO Auto-generated catch block
-	    e.printStackTrace();
-	}
-	catch (IOException e)
-	{
-	    // TODO Auto-generated catch block
-	    e.printStackTrace();
-	}
-	catch (Exception e)
-	{
-	    // TODO Auto-generated catch block
-	    e.printStackTrace();
-	}
-	*/
-	//return null;
+	
     }
 
     public static boolean bufferedCopyStream(InputStream inStream, OutputStream outStream) throws Exception

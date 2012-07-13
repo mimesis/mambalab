@@ -61,7 +61,7 @@ public class page_status
             while( ii.hasNext() )
             {
         	r = (RoomRef)ii.next();
-        	strsr.append( r.roomInstance+"/"+r.roomName+ "=" + r.ruleName+ "\n");
+        	strsr.append( r.roomName+ "=" + r.ruleName+ "\n");
             }   
 
             StringBuilder strr = new StringBuilder();

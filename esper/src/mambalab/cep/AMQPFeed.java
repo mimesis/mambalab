@@ -1,6 +1,7 @@
 package mambalab.cep;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.Map;
 
 import com.fasterxml.jackson.core.JsonParseException;
@@ -25,8 +26,8 @@ public class AMQPFeed extends BaseFeed
     public static String host;
     public static String virtualHost;
     public static int port;
-    public static boolean connected = false;
-    public static boolean hasbeeninterrupted = false;
+//   public static boolean connected = false;
+ //   public static boolean hasbeeninterrupted = false;
     public static final String routingKey = "testroute";
 
     public AMQPFeed(Rules rules)
@@ -44,11 +45,12 @@ public class AMQPFeed extends BaseFeed
 	System.out.println("will connect to " + factory.getHost());
 
     }
-/*
-    public void run_deprecated()
+
+    /*
+    public void run()
     {
 
-	connected = false;
+	isconnected = false;
 	try
 	{
 
@@ -60,15 +62,16 @@ public class AMQPFeed extends BaseFeed
 	    channel.basicConsume(AMQPFeed.queueName, false, consumer);
 
 	    System.out.println("Connected " + factory.getHost());
-	    connected = true;
+	    isconnected = true;
 	}
 	catch (IOException e1)
 	{
 	    System.err.println("Failed to connect to " + factory.getHost());
+	    isconnected=false;
 	}
 
 	System.out.println("awaiting messages from " + queueName);
-	while (isrunning && connected)
+	while (isrunning && isconnected)
 	{
 	    QueueingConsumer.Delivery delivery;
 	    try
@@ -81,10 +84,11 @@ public class AMQPFeed extends BaseFeed
 	    }
 	    catch (Exception ie)
 	    {
-		System.err.println("AMQP Interrupted");
-		connected = false;
+		System.err.println("AMQP Interrupted "+ie.toString());
+		isconnected = false;
 	    }
 	}
+	
 	try
 	{
 	    channel.close();
@@ -98,7 +102,9 @@ public class AMQPFeed extends BaseFeed
 	System.out.println("-- done with AMQPFeed -- ");
 	isrunning = false;
     }
-*/
+    */
+    
+    
     public void run()
     {
 
@@ -111,7 +117,7 @@ public class AMQPFeed extends BaseFeed
 	    channel.queueBind(AMQPFeed.queueName, AMQPFeed.exchangeName, routingKey);
 	    consumer = new QueueingConsumer(channel);
 	    System.out.println("Connected " + factory.getHost());
-	    connected = true;
+	    isconnected = true;
 
 	}
 	catch (IOException e)
@@ -125,7 +131,7 @@ public class AMQPFeed extends BaseFeed
 
 	try
 	{
-	    channel.basicConsume(queueName, true /* autoAck */, "myConsumerTag", new DefaultConsumer(channel)
+	    channel.basicConsume(queueName, true , "myConsumerTag", new DefaultConsumer(channel)
 	    {
 		@Override
 		public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties,
@@ -139,11 +145,11 @@ public class AMQPFeed extends BaseFeed
 		public void handleShutdownSignal(java.lang.String consumerTag, ShutdownSignalException sig)
 		{
 		    System.err.println("handleShutdownSignal");
-		    connected = false;
+		    isconnected = false;
 		}
 	    });
 
-	    while (isrunning && connected)
+	    while (isrunning && isconnected)
 	    {
 		Simulator.sleep(100);
 	    }
@@ -168,11 +174,14 @@ public class AMQPFeed extends BaseFeed
 	System.out.println("-- done with AMQPFeed -- ");
 	isrunning = false;
     }
+    
 
     @SuppressWarnings("unchecked")
     public void processMessage(byte[] body)
     {
 
+	lastEvent = new Date();
+	
 	ObjectMapper mapper = new ObjectMapper();
 	Map<String, Object> config;
 	try
@@ -277,15 +286,15 @@ public class AMQPFeed extends BaseFeed
 
 	    if (ev != null && validateEvent(ev))
 	    {
+		lastValidEvent = new Date();
 		System.out.println(">>" + token);
-
 		System.out.println(">>" + ev.toString());
 		rules.service.getEPRuntime().sendEvent(ev);
 	    }
 	    else
 	    {
-		// if (userId == 15)
-		System.out.println(userId + " >> " + token);
+		 if (userId == 15 || rules.infraname.equals("live")==false )
+		     System.out.println(userId + " >> " + token);
 	    }
 
 	}
