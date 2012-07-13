@@ -47,7 +47,12 @@ public class MambaLab extends AbstractHandler
         }
         
     
-        response.getWriter().println("<h1>MambaLab Control Panel</h1>");
+        StringBuilder title = new StringBuilder();
+        title.append("Mambalab Control Panel");
+        if (MambaLab.cep != null)
+            title.append(" <font color=red>"+cep.infraname+"</font>");
+        
+        response.getWriter().println("<h1>"+title+"</h1>");
         response.getWriter().println("<a href=\"/\">Status</a> ");
         response.getWriter().println("<a href=\"/result\">Results</a> ");
         response.getWriter().println("<a href=\"/check\">Check</a> ");

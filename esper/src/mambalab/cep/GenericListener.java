@@ -227,6 +227,7 @@ public class GenericListener implements UpdateListener
 	    else if (rule.action.equals("SendMessage"))
 	    {
 		String message = newEvents[0].get("message").toString();
+		String roomInstance = newEvents[0].get("roomInstance").toString();
 		int userId = Integer.parseInt(newEvents[0].get("userId").toString());
 		String type = "Alert"; // par dŽfault
 		String title = "";
@@ -263,7 +264,11 @@ public class GenericListener implements UpdateListener
 		}
 		catch (UserDontExistException e)
 		{
-		    System.err.println("user does not exist "+e.toString());
+		    System.err.println("user does not exist : sending EXIT_ROOM event");
+		
+		    MyEvent ev = new MyEvent(userId,0, "",roomInstance, "EXIT_ROOM","","");
+		    rules.service.getEPRuntime().sendEvent(ev);
+	
 		}
 		catch (TException e)
 		{

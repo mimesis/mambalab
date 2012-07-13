@@ -10,6 +10,11 @@ delay;user_id;room_id;event_name;event_param;event_param2
 
 1000;100;TEST_ROOM;CLICK_PANEL;10000;Panel1Code
 
+
+;;;TEST;opennoanswerfailedmessage
+1000;100;TEST_ROOM;SAY;/panel1
+;;;VALIDATE;
+
 1000;100;TEST_ROOM2;ENTER_ROOM;
 1000;100;TEST_ROOM2;SAY;/restart
 1000;100;TEST_ROOM2;SAY;oui
@@ -22,10 +27,15 @@ delay;user_id;room_id;event_name;event_param;event_param2
 ;;;VALIDATE;
 
 1000;100;TEST_ROOM;ENTER_ROOM;
+1000;100;TEST_ROOM;EXIT_ROOM;
+
+;;;TEST;useranswertimeout
+;;;TEST;restartquiz2;false
+35000;100;TEST_ROOM;ENTER_ROOM;
+;;;VALIDATE;
 
 
-
-1000;100;TEST_ROOM;SAY;PUMA
+10000;100;TEST_ROOM;SAY;PUMA
 1000;100;TEST_ROOM;SAY;SFR
 1000;100;TEST_ROOM;CLICK_PANEL;10000;Panel1Code
 
@@ -60,6 +70,7 @@ delay;user_id;room_id;event_name;event_param;event_param2
 1000;100;TEST_ROOM;ENTER_ROOM;
 ;;;TEST;useranswertimeout
 ;;;TEST;nomorequestion
+;;;TEST;restartquiz2
 31000;100;TEST_ROOM;SAY;N
 ;;VALIDATE;
 
