@@ -48,7 +48,7 @@ public class MambaLab extends AbstractHandler
         
     
         StringBuilder title = new StringBuilder();
-        title.append("Mambalab Control Panel");
+        title.append("Mambalab Control Panel v1.00 - ");
         if (MambaLab.cep != null)
             title.append(" <font color=red>"+cep.infraname+"</font>");
         

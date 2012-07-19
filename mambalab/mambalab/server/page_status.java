@@ -45,13 +45,16 @@ public class page_status
             strc.append((new StringBuilder("Wserver:")).append(WServer.host).append("\n").toString());
             strc.append((new StringBuilder("Thrift:")).append(Thrift.host).append("\n").toString());
             strc.append((new StringBuilder("AMQP:")).append(AMQPFeed.host).append("\n").toString());
+            
+            strc.append("</pre>");
+      
             response.getWriter().println(strc);
             StringBuilder strf = new StringBuilder();
             
           
             strf.append("<h2>Feed</h2><pre>");
             strf.append(cep.feed.getStatus());
-            strc.append("</pre>");
+            strf.append("</pre>");
             response.getWriter().println(strf);
             
             StringBuilder strsr = new StringBuilder();
@@ -73,24 +76,23 @@ public class page_status
         	String file = (String) files_iter.next();
         	strr.append(file+"\n");
             }
+            strr.append("</pre>");
             response.getWriter().println(strr);
             
-            
-            strsr.append("</pre>");
-            response.getWriter().println(strsr);
+                
             StringBuilder strq = new StringBuilder();
-            strq.append("<h2>Quizz</h2><pre>");
+            strq.append("<h2>Room Configuration</h2>");
             strq.append("<table border=\"1\"><tr>");
             strq.append("<td><b>QuizzId</td>");
             strq.append("<td><b>RoomId</b></td>");
             strq.append("<td><b>RoomName</b></td>");
             strq.append("<td><b>Enabled</b></td>");
-            strq.append("<td><b>Results</b></td>");
+           // strq.append("<td><b>Results</b></td>");
             DB db = (DB)cep.dbs.get("esper");
             String sql = "select quizz_id,room_id,room_name,activated from room_quizz";
             db.statement.execute(sql);
             String quizzId;
-            for(ResultSet rs = db.statement.getResultSet(); rs.next(); strq.append((new StringBuilder("<td><a href=\"result?quizzId=")).append(quizzId).append("\">view</a></td>").toString()))
+            for(ResultSet rs = db.statement.getResultSet(); rs.next(); )
             {
                 strq.append("<tr>");
                 quizzId = rs.getString(1);
@@ -102,9 +104,31 @@ public class page_status
                 strq.append( "<td>" + roomName+ "</td>");
                 strq.append( "<td>" + activated + "</td>");
             }
+            strq.append("</table>");
             response.getWriter().println(strq);
             
-           
+            strq = new StringBuilder();
+            strq.append("<h2>Quizz</h2>");
+            strq.append("<table border=\"1\"><tr>");
+            strq.append("<td><b>QuizzId</td>");
+            strq.append("<td><b>Nb Results</b></td>");
+            strq.append("<td><b>Results</b></td>");
+         //   DB db = (DB)cep.dbs.get("esper");
+            sql = "select quizz_id,count(distinct(user_id)),quizz_id from  answers group by quizz_id";
+            db.statement.execute(sql);
+           // String quizzId;
+            for(ResultSet rs = db.statement.getResultSet(); rs.next(); )
+            {
+                strq.append("<tr>");
+                quizzId = rs.getString(1);
+                String nb = rs.getString(2);
+                strq.append( "<td><a href=\"quizz?quizzId="+quizzId+"\">"+quizzId+"</a></td>");
+                strq.append( "<td>" + nb + "</td>");
+                strq.append("<td><a href=\"result?quizzId="+quizzId+"\">view</a></td>");
+            }
+            strq.append("</table>");
+            response.getWriter().println(strq);
+            
             
         }
         catch(IOException e)
